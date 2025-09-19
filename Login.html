@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login</title>
+  <link rel="stylesheet" href="login.css">
+</head>
+<body>
+  <div class="login-container">
+    <h2>Login</h2>
+    <form id="loginForm">
+      <input type="email" id="email" placeholder="Enter Email" required>
+      <input type="password" id="password" placeholder="Enter Password" required>
+      <button type="submit">Login</button>
+    </form>
+    <p>Don't have an account? <a href="register.html">Register here</a></p>
+  </div>
+
+  <script>
+    document.getElementById("loginForm").addEventListener("submit", function(e){
+      e.preventDefault();
+
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+
+      // Student login
+      if(email === "verzovj23@gmail.com" && password === "pogiako1818"){
+        window.location.href = "studentdash.html";
+      }
+      // Admin login
+      else if(email === "admin123@gmail.com" && password === "admin123"){
+        window.location.href = "dashboard.html";
+      }
+      else {
+        alert("Invalid email or password!");
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,123 @@
+/* General Layout */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  display: flex;
+}
+
+.sidebar {
+  width: 220px;
+  background: #c0392b; /* Red sidebar */
+  color: white;
+  height: 100vh;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.sidebar h2 {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.sidebar a {
+  display: block;
+  color: white;
+  padding: 10px;
+  margin: 5px 0;
+  text-decoration: none;
+  border-radius: 5px;
+}
+
+.sidebar a:hover {
+  background: #e74c3c;
+}
+
+.main-content {
+  flex: 1;
+  padding: 20px;
+}
+
+header {
+  background: #e74c3c; /* Red header */
+  color: white;
+  padding: 15px;
+  text-align: center;
+  border-radius: 5px;
+}
+
+/* Cards */
+.cards {
+  display: flex;
+  gap: 15px;
+  margin: 20px 0;
+}
+
+.card {
+  background: #fceaea; /* light red */
+  padding: 20px;
+  border-radius: 8px;
+  flex: 1;
+  text-align: center;
+  font-weight: bold;
+  color: #c0392b;
+  border: 1px solid #e74c3c;
+}
+
+/* Tables */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+}
+
+table th, table td {
+  border: 1px solid #e74c3c;
+  padding: 10px;
+  text-align: center;
+}
+
+table th {
+  background: #c0392b;
+  color: white;
+}
+
+table tr:nth-child(even) {
+  background: #fdf2f2;
+}
+
+/* Profile Box */
+.profile-box {
+  background: #fceaea;
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 400px;
+  border: 1px solid #e74c3c;
+}
+
+/* Reserve Form */
+.reserve-form {
+  margin: 15px 0;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.reserve-form input {
+  padding: 8px;
+  border: 1px solid #e74c3c;
+  border-radius: 5px;
+  flex: 1;
+}
+
+.reserve-form button {
+  background: #c0392b;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.reserve-form button:hover {
+  background: #e74c3c;
+}

@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard</title>
+  <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+  <div class="sidebar">
+    <h2>Library</h2>
+    <a href="#" class="active" onclick="showPage('dashboard')">Dashboard</a>
+    <a href="#" onclick="showPage('transactions')">New Transaction</a>
+    <a href="#" onclick="showPage('reports')">Reports</a>
+    <a href="#" onclick="showPage('books')">Books</a>
+    <a href="#" id="logoutBtn" class="logout">Logout</a>
+  </div>
+
+  <div class="main-content">
+    <header>
+      <h1>Welcome Admin</h1>
+    </header>
+
+    <!-- DASHBOARD -->
+    <section id="dashboard" class="page">
+      <div class="cards">
+        <div class="card"><h3>Total Books</h3><p>0</p></div>
+        <div class="card"><h3>Total Borrowers</h3><p>0</p></div>
+        <div class="card"><h3>Active Borrowings</h3><p>0</p></div>
+        <div class="card"><h3>Overdue Books</h3><p>0</p></div>
+      </div>
+
+      <div class="content-grid">
+        <div class="recent-activities">
+          <h2>Recent Activities</h2>
+          <ul id="activityList"></ul>
+        </div>
+        <div class="popular-books">
+          <h2>Popular Books</h2>
+          <ul id="popularList"></ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- NEW TRANSACTION -->
+    <section id="transactions" class="page" style="display:none;">
+      <h2>Manage Transactions</h2>
+      <form id="transactionForm" onsubmit="addTransaction(event)">
+        <input type="text" id="studentName" placeholder="Student Name" required>
+        <input type="text" id="studentId" placeholder="Student ID" required>
+        <input type="text" id="bookTitle" placeholder="Book Title" required>
+        <input type="datetime-local" id="borrowDate" required>
+        <button type="submit">Add Transaction</button>
+      </form>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Student Name</th>
+            <th>Student ID</th>
+            <th>Book Title</th>
+            <th>Borrow Date</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="transactionTable"></tbody>
+      </table>
+    </section>
+
+    <!-- REPORTS -->
+    <section id="reports" class="page" style="display:none;">
+      <h2>Reports</h2>
+
+      <div class="report-filters">
+        <button onclick="showReport('today')">Today</button>
+        <button onclick="showReport('week')">This Week</button>
+        <button onclick="showReport('month')">This Month</button>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Student Name</th>
+            <th>Student ID</th>
+            <th>Book Title</th>
+            <th>Borrow Date</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="reportTable"></tbody>
+      </table>
+    </section>
+
+    <!-- BOOKS -->
+    <section id="books" class="page" style="display:none;">
+      <h2>Books Inventory</h2>
+
+      <!-- Add Book Form -->
+      <form id="bookForm" onsubmit="addBook(event)" class="book-form">
+        <input type="text" id="bookTitleInput" placeholder="Book Title" required>
+        <input type="text" id="bookAuthorInput" placeholder="Author" required>
+        <input type="text" id="bookCategoryInput" placeholder="Category" required>
+        <input type="number" id="bookAvailableInput" placeholder="Available Copies" min="0" required>
+        <button type="submit">Add Book</button>
+      </form>
+
+      <!-- Books Table -->
+      <table>
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Category</th>
+            <th>Available</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="booksTable">
+          <tr>
+            <td>The Great Gatsby</td>
+            <td>F. Scott Fitzgerald</td>
+            <td>Fiction</td>
+            <td>3</td>
+            <td style="color:green;">Available</td>
+          </tr>
+          <tr>
+            <td>Introduction to Algorithms</td>
+            <td>Thomas H. Cormen</td>
+            <td>Computer Science</td>
+            <td>0</td>
+            <td style="color:red;">Out of Stock</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+  </div>
+
+  <script>
+    let todayRecords = [];
+    let weekRecords = [];
+    let monthRecords = [];
+
+    function showPage(pageId) {
+      document.querySelectorAll(".page").forEach(p => p.style.display = "none");
+      document.getElementById(pageId).style.display = "block";
+
+      document.querySelectorAll(".sidebar a").forEach(a => a.classList.remove("active"));
+      document.querySelector(`[onclick="showPage('${pageId}')"]`).classList.add("active");
+    }
+
+    function addTransaction(event) {
+      event.preventDefault();
+
+      const name = document.getElementById("studentName").value;
+      const id = document.getElementById("studentId").value;
+      const book = document.getElementById("bookTitle").value;
+      const borrow = document.getElementById("borrowDate").value;
+
+      const table = document.getElementById("transactionTable");
+      const row = table.insertRow();
+
+      row.insertCell(0).innerText = name;
+      row.insertCell(1).innerText = id;
+      row.insertCell(2).innerText = book;
+      row.insertCell(3).innerText = borrow;
+
+      const statusCell = row.insertCell(4);
+      statusCell.innerText = "Not Returned";
+      statusCell.style.color = "red";
+
+      const actionCell = row.insertCell(5);
+      const btn = document.createElement("button");
+      btn.innerText = "Mark Returned";
+      btn.onclick = function() {
+        statusCell.innerText = "Returned";
+        statusCell.style.color = "green";
+
+        moveToReports(name, id, book, borrow, "Returned");
+        row.remove();
+      };
+      actionCell.appendChild(btn);
+
+      const activityList = document.getElementById("activityList");
+      const li = document.createElement("li");
+      li.innerText = `${name} borrowed "${book}"`;
+      activityList.prepend(li);
+
+      document.getElementById("transactionForm").reset();
+    }
+
+    function moveToReports(name, id, book, borrow, status) {
+      const record = { name, id, book, borrow, status };
+      todayRecords.push(record);
+      weekRecords.push(record);
+      monthRecords.push(record);
+
+      showReport("today");
+    }
+
+    function showReport(type) {
+      const table = document.getElementById("reportTable");
+      table.innerHTML = "";
+
+      let records = [];
+      if (type === "today") records = todayRecords;
+      if (type === "week") records = weekRecords;
+      if (type === "month") records = monthRecords;
+
+      records.forEach(r => {
+        const row = table.insertRow();
+        row.insertCell(0).innerText = r.name;
+        row.insertCell(1).innerText = r.id;
+        row.insertCell(2).innerText = r.book;
+        row.insertCell(3).innerText = r.borrow;
+        const statusCell = row.insertCell(4);
+        statusCell.innerText = r.status;
+        statusCell.style.color = "green";
+      });
+    }
+
+    function addBook(event) {
+      event.preventDefault();
+
+      const title = document.getElementById("bookTitleInput").value;
+      const author = document.getElementById("bookAuthorInput").value;
+      const category = document.getElementById("bookCategoryInput").value;
+      const available = parseInt(document.getElementById("bookAvailableInput").value);
+
+      const table = document.getElementById("booksTable");
+      const row = table.insertRow();
+
+      row.insertCell(0).innerText = title;
+      row.insertCell(1).innerText = author;
+      row.insertCell(2).innerText = category;
+      row.insertCell(3).innerText = available;
+
+      const statusCell = row.insertCell(4);
+      if (available > 0) {
+        statusCell.innerText = "Available";
+        statusCell.style.color = "green";
+      } else {
+        statusCell.innerText = "Out of Stock";
+        statusCell.style.color = "red";
+      }
+
+      document.getElementById("bookForm").reset();
+    }
+
+    // ✅ Logout function
+    document.getElementById("logoutBtn").addEventListener("click", function(e) {
+      e.preventDefault();
+      alert("You have been logged out!");
+      window.location.href = "login.html";
+    });
+  </script>
+</body>
+</html>

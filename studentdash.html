@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Dashboard</title>
+  <link rel="stylesheet" href="studentdashboard.css">
+</head>
+<body>
+  <div class="sidebar">
+    <h2>Student Panel</h2>
+    <a href="#" onclick="showPage('overview')">Overview</a>
+    <a href="#" onclick="showPage('borrowed')">My Borrowed Books</a>
+    <a href="#" onclick="showPage('reserve')">Reserve</a>
+    <a href="#" onclick="showPage('profile')">Profile</a>
+    <a href="login.html">Logout</a>
+  </div>
+
+  <div class="main-content">
+    <header>
+      <h1>Welcome Student</h1>
+    </header>
+
+    <!-- Overview Section -->
+    <section id="overview" class="page">
+      <h2>Dashboard Overview</h2>
+      <div class="cards">
+        <div class="card">📚 Borrowed Books: 0</div>
+        <div class="card">✅ Returned Books: 0</div>
+        <div class="card">⚠️ Overdue Books: 0</div>
+      </div>
+    </section>
+
+    <!-- Borrowed Books -->
+    <section id="borrowed" class="page" style="display:none;">
+      <h2>My Borrowed Books</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Book Title</th>
+            <th>Borrowing Date</th>
+            <th>Due Date</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="borrowedTable">
+          <tr>
+            <td colspan="4">No records yet.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Reserve Books -->
+    <section id="reserve" class="page" style="display:none;">
+      <h2>Reserve a Book</h2>
+
+      <!-- Reservation Form -->
+      <div class="reserve-form">
+        <input type="text" id="studentName" placeholder="Student Name">
+        <input type="text" id="studentId" placeholder="Student ID">
+        <input type="text" id="bookTitle" placeholder="Book Title">
+        <input type="datetime-local" id="borrowDate">
+        <button onclick="addReservation()">Add Reservation</button>
+      </div>
+
+      <!-- Reservation Table -->
+      <table>
+        <thead>
+          <tr>
+            <th>Student Name</th>
+            <th>Student ID</th>
+            <th>Book Title</th>
+            <th>Borrow Date</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="reserveTable">
+          <tr>
+            <td colspan="5">No reservations yet.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Profile -->
+    <section id="profile" class="page" style="display:none;">
+      <h2>My Profile</h2>
+      <div class="profile-box">
+        <p><strong>Name:</strong> Juan Dela Cruz</p>
+        <p><strong>Student ID:</strong> 2025-0001</p>
+        <p><strong>Course:</strong> BSIT</p>
+        <p><strong>Year Level:</strong> 3rd Year</p>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    // Page switching
+    function showPage(pageId) {
+      document.querySelectorAll('.page').forEach(page => {
+        page.style.display = "none";
+      });
+      document.getElementById(pageId).style.display = "block";
+    }
+
+    // Add Reservation
+    function addReservation() {
+      const name = document.getElementById("studentName").value.trim();
+      const id = document.getElementById("studentId").value.trim();
+      const title = document.getElementById("bookTitle").value.trim();
+      const borrowDate = document.getElementById("borrowDate").value;
+      const tableBody = document.getElementById("reserveTable");
+
+      if (name === "" || id === "" || title === "" || borrowDate === "") {
+        alert("Please fill out all fields before adding.");
+        return;
+      }
+
+      // Clear "No reservations yet."
+      if (tableBody.rows[0].cells[0].colSpan === 5) {
+        tableBody.innerHTML = "";
+      }
+
+      // Insert new row
+      const row = tableBody.insertRow();
+      row.insertCell(0).textContent = name;
+      row.insertCell(1).textContent = id;
+      row.insertCell(2).textContent = title;
+      row.insertCell(3).textContent = borrowDate;
+      const statusCell = row.insertCell(4);
+      statusCell.textContent = "Pending";
+      statusCell.style.color = "red";
+
+      // Clear form
+      document.getElementById("studentName").value = "";
+      document.getElementById("studentId").value = "";
+      document.getElementById("bookTitle").value = "";
+      document.getElementById("borrowDate").value = "";
+    }
+  </script>
+</body>
+</html>
